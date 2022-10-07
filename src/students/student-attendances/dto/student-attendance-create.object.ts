@@ -7,7 +7,7 @@ import { StudentAttendance } from '../entities/student-attendance.entity';
 //
 // Example implementation check PaymentLoansListObject
 @ObjectType()
-export class StudentCheckInObject {
+export class StudentAttendanceUpdateObject {
   @Field(() => StudentAttendance, { nullable: true })
   studentAttendance?: StudentAttendance;
 

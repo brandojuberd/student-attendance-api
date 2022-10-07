@@ -15,7 +15,7 @@ import { faker } from '@faker-js/faker/locale/id_ID';
 import { StudentsService } from './students.service';
 import { STUDENTS_LIST } from 'src/common/graphql/queries/students.queries';
 import { StudentAttendancesService } from './student-attendances/student-attendances.service';
-import { STUDENT_ATTENDANCE_CREATE } from 'src/common/graphql/mutations/student-attendances.mutations';
+import { STUDENT_ATTENDANCE_CHECKOUT, STUDENT_ATTENDANCE_CREATE } from 'src/common/graphql/mutations/student-attendances.mutations';
 import { StudentAttendance } from './student-attendances/entities/student-attendance.entity';
 
 function generateRandomStudent() {
@@ -169,6 +169,24 @@ describe('Solutions', () => {
     // expect(res.body.errors[0].message).toMatch(
     //   /Siswa\/i telah melakukan check in/,
     // );
+
+    res = await supertest(app.getHttpServer())
+      .post('/graphql')
+      // .set('Authorization', `Bearer ${adminProfile.accessToken}`)
+      .send({
+        operationName: null,
+        variables: {
+          studentId: firstStudent._id,
+        },
+        query: STUDENT_ATTENDANCE_CHECKOUT,
+      });
+    expect(res.body.errors).toBeUndefined();
+    studentAttendance =
+      res.body.data.studentAttendanceCheckout.studentAttendance;
+    console.log({
+      body: res.body.data
+    })
+    expect(studentAttendance.student._id).toEqual(firstStudent._id);
 
     // CREATE student attendance late time
     // res = await supertest(app.getHttpServer())

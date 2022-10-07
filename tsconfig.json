@@ -32,7 +32,11 @@
     "allowUnusedLabels": false,
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
   
+  },
+  "ts-node": {
+    // "swc": true
+    // "transpileOnly": true
   }
 }

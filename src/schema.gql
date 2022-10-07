@@ -44,7 +44,7 @@ type StudentAttendance {
   checkOut: DateTime
 }
 
-type StudentCheckInObject {
+type StudentAttendanceUpdateObject {
   studentAttendance: StudentAttendance
   message: String!
 }
@@ -124,8 +124,9 @@ type Mutation {
   studentCreateMany(data: [CreateStudentInput!]!): Student!
   studentUpdate(studentId: ObjectId!, data: UpdateStudentInput!): Student!
   studentDelete(studentId: ObjectId!): Student!
-  studentAttendanceCreate(data: CreateStudentAttendanceInput!): StudentCheckInObject!
+  studentAttendanceCreate(data: CreateStudentAttendanceInput!): StudentAttendanceUpdateObject!
   studentAttendanceUpdate(studentAttendanceId: ObjectId!, data: UpdateStudentAttendanceInput!): StudentAttendance!
+  studentAttendanceCheckout(studentId: ObjectId!): StudentAttendanceUpdateObject!
   studentAttendanceDelete(studentAttendanceId: ObjectId!): StudentAttendance!
   userCreate(data: CreateUserInput!): User!
   userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
@@ -160,8 +161,7 @@ input CreateStudentAttendanceInput {
 }
 
 input UpdateStudentAttendanceInput {
-  student: ObjectId
-  checkIn: DateTime
+  checkIn: DateTime!
 }
 
 input CreateUserInput {

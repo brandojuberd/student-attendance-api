@@ -11,7 +11,7 @@ import { ObjectIdScalar } from 'src/common/graphql/scalars/object-id.scalars';
 import { TypeObjectId } from 'src/common/helpers/mongoose.helper';
 import { CreateStudentAttendanceInput } from './dto/create-student-attendance.input';
 import { GetStudentAttendancesArgs } from './dto/get-student-attendances-args';
-import { StudentCheckInObject } from './dto/student-attendance-create.object';
+import { StudentAttendanceUpdateObject } from './dto/student-attendance-create.object';
 import { StudentAttendancesList } from './dto/student-attendance-lists.object';
 import { UpdateStudentAttendanceInput } from './dto/update-student-attendance.input';
 import { StudentAttendance } from './entities/student-attendance.entity';
@@ -63,7 +63,7 @@ export class StudentAttendancesResolver {
     );
   }
 
-  @Mutation(() => StudentCheckInObject)
+  @Mutation(() => StudentAttendanceUpdateObject)
   studentAttendanceCreate(
     @Args('data', { type: () => CreateStudentAttendanceInput })
     body: CreateStudentAttendanceInput,
@@ -86,6 +86,17 @@ export class StudentAttendancesResolver {
       },
     );
   }
+
+  @Mutation(() => StudentAttendanceUpdateObject)
+  studentAttendanceCheckout(
+    @Args('studentId', { type: () => ObjectIdScalar })
+    studentId: TypeObjectId,
+  ) {
+    return this.studentAttendancesService.checkoutStudent(
+      studentId
+    );
+  }
+
 
   @Mutation(() => StudentAttendance)
   studentAttendanceDelete(

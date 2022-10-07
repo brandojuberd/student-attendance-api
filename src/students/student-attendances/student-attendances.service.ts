@@ -6,9 +6,10 @@ import { CreateStudentAttendanceInput } from './dto/create-student-attendance.in
 import { StudentAttendancesList } from './dto/student-attendance-lists.object';
 import { StudentAttendance } from './entities/student-attendance.entity';
 import { DateTime } from 'luxon';
-import { StudentCheckInObject } from './dto/student-attendance-create.object';
+import { StudentAttendanceUpdateObject } from './dto/student-attendance-create.object';
 import { GetStudentAttendancesArgs } from './dto/get-student-attendances-args';
 import { WhatsappsService } from 'src/whatsapps/whatsapps.service';
+import { TypeObjectId } from 'src/common/helpers/mongoose.helper';
 // ${1 : PascalCase}
 // ${2 : camelCase}
 @Injectable()
@@ -37,10 +38,10 @@ export class StudentAttendancesService extends Service<StudentAttendance> {
     };
   }
 
-  // CREATE
+  // --- CREATE
   async createStudentAttendance(
     data: CreateStudentAttendanceInput,
-  ): Promise<StudentCheckInObject> {
+  ): Promise<StudentAttendanceUpdateObject> {
     let timeJakarta = DateTime.now().setZone('Asia/Jakarta');
     const lateTime = timeJakarta.set({ hour: 6, minute: 30 });
     const checkIn = DateTime.fromJSDate(data.checkIn).setZone('Asia/Jakarta');
@@ -62,10 +63,33 @@ export class StudentAttendancesService extends Service<StudentAttendance> {
     //     message: 'Siswa/i terlambat',
     //   };
     // }
-    await this.whatsappsService.sendAnyMessage()
+    await this.whatsappsService.sendAnyMessage();
     return {
       studentAttendance,
       message: 'Berhasil melakukan check in',
+    };
+  }
+
+  // --- UPDATE
+  async checkoutStudent(
+    studentId: TypeObjectId,
+  ): Promise<StudentAttendanceUpdateObject> {
+    let timeJakarta = DateTime.now().setZone('Asia/Jakarta');
+    const currentStudentAttendance = await this.findOneV2({
+      student: studentId,
+      checkIn: {
+        $gte: timeJakarta.set({ hour: 0, minute: 0 }),
+        $lte: timeJakarta.set({ hour: 23, minute: 59 }),
+      },
+    });
+    if (!currentStudentAttendance) {
+      throw new BadRequestException('Siswa/i belum melakukan check in');
+    }
+    currentStudentAttendance.checkOut = timeJakarta.toJSDate();
+    currentStudentAttendance.save();
+    return {
+      studentAttendance: currentStudentAttendance,
+      message: 'Berhasil melakukan check out.',
     };
   }
 

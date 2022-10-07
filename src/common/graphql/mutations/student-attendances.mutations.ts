@@ -11,3 +11,19 @@ mutation StudentAttendanceCreate($data: CreateStudentAttendanceInput!){
     message
   }
 }`;
+
+export const STUDENT_ATTENDANCE_CHECKOUT = `
+mutation StudentAttendanceCheckout($studentId: ObjectId!){
+  studentAttendanceCheckout(studentId: $studentId) {
+    studentAttendance {
+      checkIn
+      checkOut
+      student {
+        _id
+      }
+    }
+    message
+  }
+
+}
+`;
