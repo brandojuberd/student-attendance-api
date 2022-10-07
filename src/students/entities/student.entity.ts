@@ -10,7 +10,7 @@ export class Student {
 
   @Field(() => String)
   @Prop({ type: String })
-  nisn!: string;
+  nik!: string;
 
   @Field(() => String)
   @Prop({ type: String })

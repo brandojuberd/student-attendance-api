@@ -5,6 +5,27 @@ import { Document, ObjectId as TypeObjectId } from 'mongoose';
 @InputType()
 @ArgsType()
 export class CreateStudentInput {
-  @Field(() => ID)
-  _id!: TypeObjectId;
+  @Field(() => String)
+  nik!: string;
+
+  @Field(() => String)
+  fullName!: string;
+
+  @Field(() => String)
+  profilePhoto!: string;
+
+  @Field(() => String)
+  school!: string;
+
+  @Field(() => String)
+  class!: string;
+
+  @Field(() => Date)
+  birthDate!: Date;
+
+  @Field(() => String)
+  countryCode!: string;
+
+  @Field(() => String)
+  phone!: string;
 }

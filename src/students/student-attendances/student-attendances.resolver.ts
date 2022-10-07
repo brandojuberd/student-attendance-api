@@ -6,10 +6,12 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { PopulateInput } from 'src/common/dto/populate.input';
 import { ObjectIdScalar } from 'src/common/graphql/scalars/object-id.scalars';
 import { TypeObjectId } from 'src/common/helpers/mongoose.helper';
 import { CreateStudentAttendanceInput } from './dto/create-student-attendance.input';
 import { GetStudentAttendancesArgs } from './dto/get-student-attendances-args';
+import { StudentCheckInObject } from './dto/student-attendance-create.object';
 import { StudentAttendancesList } from './dto/student-attendance-lists.object';
 import { UpdateStudentAttendanceInput } from './dto/update-student-attendance.input';
 import { StudentAttendance } from './entities/student-attendance.entity';
@@ -22,50 +24,77 @@ import { StudentAttendancesService } from './student-attendances.service';
 export class StudentAttendancesResolver {
   //${1 : CapitalCase}
   //${2 : camelCase}
-  constructor(private readonly studentAttendancesService: StudentAttendancesService) {}
+  constructor(
+    private readonly studentAttendancesService: StudentAttendancesService,
+  ) {}
 
-  @Query(() => [StudentAttendance], { name: 'studentAttendances' })
-  getStudentAttendances(
-    @Args('query', { type: () => GetStudentAttendancesArgs}) query: GetStudentAttendancesArgs
-  ) {
-    return this.studentAttendancesService.find(query);
-  }
+  // @Query(() => [StudentAttendance], { name: 'studentAttendances' })
+  // getStudentAttendances(
+  //   @Args('query', { type: () => GetStudentAttendancesArgs}) query: GetStudentAttendancesArgs
+  // ) {
+  //   return this.studentAttendancesService.find(query);
+  // }
 
   @Query(() => StudentAttendance, { name: 'studentAttendance' })
-  findStudentAttendanceById(@Args('studentAttendanceId', { type: () => ObjectIdScalar }) studentAttendanceId: TypeObjectId) {
-  // findStudentAttendance(@Args() query: GetStudentAttendancesArgs) {
+  findStudentAttendanceById(
+    @Args('studentAttendanceId', { type: () => ObjectIdScalar })
+    studentAttendanceId: TypeObjectId,
+  ) {
+    // findStudentAttendance(@Args() query: GetStudentAttendancesArgs) {
     return this.studentAttendancesService.findById(studentAttendanceId);
   }
 
-
   @Query(() => StudentAttendancesList, { name: 'studentAttendancesList' })
   getStudentAttendancesList(
-    @Args('query', { type: () => GetStudentAttendancesArgs}) query: GetStudentAttendancesArgs
+    @Args('query', { nullable: true, type: () => GetStudentAttendancesArgs })
+    query: GetStudentAttendancesArgs,
+    @Args('populate', {
+      nullable: true,
+      type: () => [PopulateInput],
+      defaultValue: [],
+    })
+    populate: PopulateInput[],
+    @Args('lean', { nullable: true, defaultValue: false }) lean: boolean,
   ) {
-    return this.studentAttendancesService.getStudentAttendancesList(query);
+    return this.studentAttendancesService.getStudentAttendancesList(
+      query,
+      {},
+      { populate, lean },
+    );
   }
 
-  @Mutation(() => StudentAttendance)
+  @Mutation(() => StudentCheckInObject)
   studentAttendanceCreate(
-    @Args('data', { type: () =>  CreateStudentAttendanceInput}) body: CreateStudentAttendanceInput
+    @Args('data', { type: () => CreateStudentAttendanceInput })
+    body: CreateStudentAttendanceInput,
   ) {
-    return this.studentAttendancesService.create(body);
+    return this.studentAttendancesService.createStudentAttendance(body);
   }
 
   @Mutation(() => StudentAttendance)
   studentAttendanceUpdate(
-    @Args('studentAttendanceId', { type: () => ObjectIdScalar }) studentAttendanceId: TypeObjectId,
+    @Args('studentAttendanceId', { type: () => ObjectIdScalar })
+    studentAttendanceId: TypeObjectId,
     @Args('data', { type: () => UpdateStudentAttendanceInput })
     data: UpdateStudentAttendanceInput, //update use same type
   ) {
-    return this.studentAttendancesService.findByIdAndUpdate(studentAttendanceId, data, {
-      new: true,
-    });
+    return this.studentAttendancesService.findByIdAndUpdate(
+      studentAttendanceId,
+      data,
+      {
+        new: true,
+      },
+    );
   }
 
   @Mutation(() => StudentAttendance)
-  studentAttendanceDelete(@Args('studentAttendanceId', { type: () => ObjectIdScalar }) studentAttendanceId: TypeObjectId) {
-    return this.studentAttendancesService.findByIdAndDelete(studentAttendanceId);
+  studentAttendanceDelete(
+    @Args('studentAttendanceId', { type: () => ObjectIdScalar })
+    studentAttendanceId: TypeObjectId,
+  ) {
+    return this.studentAttendancesService.findByIdAndDelete(
+      studentAttendanceId,
+    );
   }
 
   /**
@@ -86,4 +115,4 @@ export class StudentAttendancesResolver {
   //   ) {
   //     return getEnumLabelAndValue(<field>Enum, studentAttendance.<field>)
   //   }
-  }
+}

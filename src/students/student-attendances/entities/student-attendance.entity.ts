@@ -23,7 +23,7 @@ export class StudentAttendance {
   @Prop({ type: Date })
   checkIn!: Date;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @Prop({ type: Date })
   checkOut?: Date | undefined;
 }

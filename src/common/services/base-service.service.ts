@@ -11,6 +11,7 @@ import {
   Document,
   FilterQuery,
   HydratedDocument,
+  InsertManyOptions,
   LeanDocument,
   Model,
   PipelineStage,
@@ -31,7 +32,7 @@ import {
  */
 @Injectable()
 export abstract class Service<T> {
-  readonly modelName: string = "";
+  readonly modelName: string = '';
   // private readonly baseStorageService: StorageService;
   //   private readonly serviceLogger: LoggerService;
 
@@ -42,12 +43,10 @@ export abstract class Service<T> {
    * @param {Logger} logger - The injected logger.
    * @param {Model} baseModel - The injected model.
    */
-  constructor(
-    private readonly baseModel: Model<T>,
-    // logger?: LoggerService,
-    // private readonly uploadEnumBaseService?: any[],
-    // private readonly baseStorageService?: StorageService
-  ) {
+  constructor(private readonly baseModel: Model<T>) // logger?: LoggerService,
+  // private readonly uploadEnumBaseService?: any[],
+  // private readonly baseStorageService?: StorageService
+  {
     // Services who extend this service already contain a property called
     // 'logger' so we will assign it to a different name.
     // this.serviceLogger = logger;
@@ -88,25 +87,25 @@ export abstract class Service<T> {
   //   }
   // }
 
-  // /**
-  //  * Find one entry and return the result.
-  //  *
-  //  * @throws InternalServerErrorException
-  //  */
-  // findOneV2(
-  //   conditions: FilterQuery<T> | Partial<Record<keyof T, unknown>>,
-  //   projection: ProjectionFields<T> = {},
-  //   options: QueryOptions | null | Record<string, unknown> = {}
-  // ) {
-  //   return this.baseModel.findOne(
-  //     {
-  //       ...conditions,
-  //       deletedAt: null,
-  //     },
-  //     projection,
-  //     options
-  //   );
-  // }
+  /**
+   * Find one entry and return the result.
+   *
+   * @throws InternalServerErrorException
+   */
+  findOneV2(
+    conditions: FilterQuery<T> | Partial<Record<keyof T, unknown>>,
+    projection: ProjectionFields<T> = {},
+    options: QueryOptions | null | Record<string, unknown> = {},
+  ) {
+    return this.baseModel.findOne(
+      {
+        ...conditions,
+        deletedAt: null,
+      },
+      projection,
+      options,
+    );
+  }
 
   // /**
   //  * @deprecated use findV2
@@ -175,7 +174,7 @@ export abstract class Service<T> {
   find(
     conditions: FilterQuery<T>,
     projection: ProjectionFields<T> = {},
-    options: QueryOptions<T> = {}
+    options: QueryOptions<T> = {},
   ) {
     try {
       // const {
@@ -220,7 +219,7 @@ export abstract class Service<T> {
           deletedAt: null,
         },
         projection,
-        options
+        options,
       );
     } catch (err) {
       //   this.serviceLogger.error(`Could not find ${this.modelName} entry:`);
@@ -266,7 +265,7 @@ export abstract class Service<T> {
   findById(
     _id: Types.ObjectId,
     projection: ProjectionFields<T> = {},
-    options: QueryOptions<T> = {}
+    options: QueryOptions<T> = {},
   ) {
     try {
       const doc = this.baseModel.findOne(
@@ -275,7 +274,7 @@ export abstract class Service<T> {
           deletedAt: null,
         },
         projection,
-        options
+        options,
       );
       return doc;
     } catch (err) {
@@ -332,16 +331,16 @@ export abstract class Service<T> {
   //   return this.create(newData as Record<keyof T, unknown>, options);
   // }
 
-  // async insertMany(docs: T[], options: Record<string, unknown> = {}) {
-  //   try {
-  //     const insertedDocs = await this.baseModel.insertMany(docs, options);
-  //     return insertedDocs;
-  //   } catch (err) {
-  //     //   this.serviceLogger.error(`Could not find ${this.modelName} entry:`);
-  //     //   this.serviceLogger.error(err);
-  //     throw new InternalServerErrorException(err);
-  //   }
-  // }
+  async insertMany(docs: AnyKeys<T>[], options: InsertManyOptions = {}) {
+    try {
+      const insertedDocs = await this.baseModel.insertMany(docs, options);
+      return insertedDocs;
+    } catch (err) {
+      //   this.serviceLogger.error(`Could not find ${this.modelName} entry:`);
+      //   this.serviceLogger.error(err);
+      throw new InternalServerErrorException(err);
+    }
+  }
 
   // private sanitizeFileUploadName(dto: object) {
   //   for (let i = 0; i < this.uploadEnumBaseService?.length; i++) {
@@ -400,8 +399,8 @@ export abstract class Service<T> {
 
   findByIdAndUpdate(
     docId: Types.ObjectId | string,
-    updateDto: UpdateQuery<T>, 
-    options: QueryOptions = { new: true }
+    updateDto: UpdateQuery<T>,
+    options: QueryOptions = { new: true },
   ) {
     try {
       return this.baseModel.findByIdAndUpdate(docId, updateDto, {
@@ -510,8 +509,8 @@ export abstract class Service<T> {
    */
   async findByIdAndDelete(
     _id: Types.ObjectId,
-    options: Record<string, unknown> = {}
-  ){
+    options: Record<string, unknown> = {},
+  ) {
     try {
       //? IF StorageService is not included, cannot delete file
       // if (this.baseStorageService) {
@@ -638,7 +637,7 @@ export abstract class Service<T> {
   async count(
     conditions: any = {}, //: Partial<Record<keyof T | string, unknown>>,
     projection: string | Record<string, unknown> = {},
-    options: Record<string, unknown> = {}
+    options: Record<string, unknown> = {},
   ): Promise<number> {
     try {
       const {

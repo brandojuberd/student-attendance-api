@@ -149,23 +149,26 @@ export class WhatsappsService {
   }
 
   async sendAnyMessage(){
-    const templates = await this.getTemplate({
-      limit: 5,
-      query: "",
-      status: "APPROVED"
-    })
-    console.log({
-      templates
-    })
+    // const templates = await this.getTemplate({
+    //   limit: 5,
+    //   query: "",
+    //   status: "APPROVED"
+    // })
+    // const result = await this.sendDirectMessage({
+    //   messageTopicName: templates[0].name,
+    //   parameters: {body: [], buttons: []},
+    //   telephoneNumber: "628811128613",
+    //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
+    //   whatsAppTemplateMessageID: templates[0].id
+    // })
     const result = await this.sendDirectMessage({
-      messageTopicName: templates[0].name,
-      parameters: {body: [], buttons: []},
-      telephoneNumber: "628811128613",
+      messageTopicName: "send-late-message",
+      parameters: {body: []},
+      countryCode: "62",
+      toName: "ipeh",
+      telephoneNumber: "81382118825",
       channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
-      whatsAppTemplateMessageID: templates[0].id
-    })
-    console.log({
-      result
+      whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
     })
     return "sucess"
   }

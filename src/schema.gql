@@ -4,7 +4,7 @@
 
 type Student {
   _id: ID!
-  nisn: String!
+  nik: String!
   fullName: String!
   profilePhoto: String!
   school: String!
@@ -18,23 +18,6 @@ type Student {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type StudentsList {
-  students: [Student!]!
-  count: Float!
-}
-
-type User {
-  _id: ID!
-  username: String!
-  role: String!
-  password: String!
-}
-
-type UsersList {
-  users: [User!]!
-  count: Float!
-}
 
 type WhatsappTemplateMessageComponent {
   type: String!
@@ -55,21 +38,82 @@ type WhatsappTemplateMessageParameter {
   body: [WhatsappTemplateMessageBody!]!
 }
 
+type StudentAttendance {
+  student: Student!
+  checkIn: DateTime!
+  checkOut: DateTime
+}
+
+type StudentCheckInObject {
+  studentAttendance: StudentAttendance
+  message: String!
+}
+
+type StudentAttendancesList {
+  studentAttendances: [StudentAttendance!]!
+  count: Float!
+}
+
+type StudentsList {
+  students: [Student!]!
+  count: Float!
+}
+
+type User {
+  _id: ID!
+  username: String!
+  role: String!
+  password: String!
+}
+
+type UsersList {
+  users: [User!]!
+  count: Float!
+}
+
 type Query {
-  students(query: GetStudentsArgs!): [Student!]!
   student(studentId: ObjectId!): Student!
-  studentsList(query: GetStudentsArgs!): StudentsList!
+  studentsList(query: GetStudentsArgs): StudentsList!
+  studentAttendance(studentAttendanceId: ObjectId!): StudentAttendance!
+  studentAttendancesList(query: GetStudentAttendancesArgs, populate: [PopulateInput!] = [], lean: Boolean = false): StudentAttendancesList!
   users(query: GetUsersArgs!): [User!]!
   user(userId: ObjectId!): User!
   usersList(query: GetUsersArgs!): UsersList!
 }
 
-input GetStudentsArgs {
-  _id: String
-}
-
 """Mongo object id scalar type"""
 scalar ObjectId
+
+input GetStudentsArgs {
+  nik: String
+  fullName: String
+  profilePhoto: String
+  school: String
+  class: String
+  birthDate: DateTime
+  countryCode: String
+  phone: String
+}
+
+input GetStudentAttendancesArgs {
+  student: ObjectId
+  dateRange: DateRangeArgs
+}
+
+input DateRangeArgs {
+  start: DateTime
+  end: DateTime
+}
+
+input PopulateInput {
+  path: String!
+  populate: [PopulateInput!]
+  options: QueryOptionInput
+}
+
+input QueryOptionInput {
+  lean: Boolean
+}
 
 input GetUsersArgs {
   _id: String
@@ -77,19 +121,47 @@ input GetUsersArgs {
 
 type Mutation {
   studentCreate(data: CreateStudentInput!): Student!
+  studentCreateMany(data: [CreateStudentInput!]!): Student!
   studentUpdate(studentId: ObjectId!, data: UpdateStudentInput!): Student!
   studentDelete(studentId: ObjectId!): Student!
+  studentAttendanceCreate(data: CreateStudentAttendanceInput!): StudentCheckInObject!
+  studentAttendanceUpdate(studentAttendanceId: ObjectId!, data: UpdateStudentAttendanceInput!): StudentAttendance!
+  studentAttendanceDelete(studentAttendanceId: ObjectId!): StudentAttendance!
   userCreate(data: CreateUserInput!): User!
   userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
   userDelete(userId: ObjectId!): User!
 }
 
 input CreateStudentInput {
-  _id: ID!
+  nik: String!
+  fullName: String!
+  profilePhoto: String!
+  school: String!
+  class: String!
+  birthDate: DateTime!
+  countryCode: String!
+  phone: String!
 }
 
 input UpdateStudentInput {
-  _id: ID
+  nik: String
+  fullName: String
+  profilePhoto: String
+  school: String
+  class: String
+  birthDate: DateTime
+  countryCode: String
+  phone: String
+}
+
+input CreateStudentAttendanceInput {
+  student: ObjectId!
+  checkIn: DateTime!
+}
+
+input UpdateStudentAttendanceInput {
+  student: ObjectId
+  checkIn: DateTime
 }
 
 input CreateUserInput {

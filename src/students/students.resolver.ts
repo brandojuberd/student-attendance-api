@@ -24,37 +24,42 @@ export class StudentsResolver {
   //${2 : camelCase}
   constructor(private readonly studentsService: StudentsService) {}
 
-  @Query(() => [Student], { name: 'students' })
-  getStudents(
-    @Args('query', { type: () => GetStudentsArgs}) query: GetStudentsArgs
-  ) {
-    return this.studentsService.find(query);
-  }
-
   @Query(() => Student, { name: 'student' })
-  findStudentById(@Args('studentId', { type: () => ObjectIdScalar }) studentId: Types.ObjectId) {
-  // findStudent(@Args() query: GetStudentsArgs) {
-    return this.studentsService.findById(studentId);
+  async findStudentById(
+    @Args('studentId', { type: () => ObjectIdScalar })
+    studentId: Types.ObjectId,
+  ) {
+    const res = await this.studentsService.findById(studentId);
+    return res;
   }
-
 
   @Query(() => StudentsList, { name: 'studentsList' })
   getStudentsList(
-    @Args('query', { type: () => GetStudentsArgs}) query: GetStudentsArgs
+    @Args('query', { nullable: true, type: () => GetStudentsArgs })
+    query: GetStudentsArgs,
   ) {
     return this.studentsService.getStudentsList(query);
   }
 
   @Mutation(() => Student)
   studentCreate(
-    @Args('data', { type: () =>  CreateStudentInput}) body: CreateStudentInput
+    @Args('data', { type: () => CreateStudentInput }) body: CreateStudentInput,
   ) {
     return this.studentsService.create(body);
   }
 
   @Mutation(() => Student)
+  studentCreateMany(
+    @Args('data', { type: () => [CreateStudentInput] })
+    body: CreateStudentInput[],
+  ) {
+    return this.studentsService.insertMany(body);
+  }
+
+  @Mutation(() => Student)
   studentUpdate(
-    @Args('studentId', { type: () => ObjectIdScalar }) studentId: Types.ObjectId,
+    @Args('studentId', { type: () => ObjectIdScalar })
+    studentId: Types.ObjectId,
     @Args('data', { type: () => UpdateStudentInput })
     data: UpdateStudentInput, //update use same type
   ) {
@@ -64,7 +69,10 @@ export class StudentsResolver {
   }
 
   @Mutation(() => Student)
-  studentDelete(@Args('studentId', { type: () => ObjectIdScalar }) studentId: Types.ObjectId) {
+  studentDelete(
+    @Args('studentId', { type: () => ObjectIdScalar })
+    studentId: Types.ObjectId,
+  ) {
     return this.studentsService.findByIdAndDelete(studentId);
   }
 
@@ -86,4 +94,4 @@ export class StudentsResolver {
   //   ) {
   //     return getEnumLabelAndValue(<field>Enum, student.<field>)
   //   }
-  }
+}

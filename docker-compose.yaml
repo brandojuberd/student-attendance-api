@@ -15,7 +15,7 @@ services:
     ports:
       - 3270:3270
     volumes:
-      - ./:/home/app
+      - ./:/home/app:z
     networks:
       - server-network
     depends_on:
@@ -39,6 +39,6 @@ services:
       retries: 3
     restart: unless-stopped
     volumes:
-      - /home/data/saa-db:/data/configdb
-      - /home/data/saa-db:/data/db
+      - /home/data/saa-db:/data/configdb:z
+      - /home/data/saa-db:/data/db:z
 
