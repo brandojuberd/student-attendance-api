@@ -1,0 +1,101 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Student {
+  _id: ID!
+  nisn: String!
+  fullName: String!
+  profilePhoto: String!
+  school: String!
+  class: String!
+  birthDate: DateTime!
+  countryCode: String!
+  phone: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type StudentsList {
+  students: [Student!]!
+  count: Float!
+}
+
+type User {
+  _id: ID!
+  username: String!
+  role: String!
+  password: String!
+}
+
+type UsersList {
+  users: [User!]!
+  count: Float!
+}
+
+type WhatsappTemplateMessageComponent {
+  type: String!
+  text: String!
+  url: String
+  example: [String!]
+}
+
+type WhatsappTemplateMessageBody {
+  """must be number with type of string"""
+  key: String!
+
+  """must be in snake case, max length 16"""
+  value: String!
+}
+
+type WhatsappTemplateMessageParameter {
+  body: [WhatsappTemplateMessageBody!]!
+}
+
+type Query {
+  students(query: GetStudentsArgs!): [Student!]!
+  student(studentId: ObjectId!): Student!
+  studentsList(query: GetStudentsArgs!): StudentsList!
+  users(query: GetUsersArgs!): [User!]!
+  user(userId: ObjectId!): User!
+  usersList(query: GetUsersArgs!): UsersList!
+}
+
+input GetStudentsArgs {
+  _id: String
+}
+
+"""Mongo object id scalar type"""
+scalar ObjectId
+
+input GetUsersArgs {
+  _id: String
+}
+
+type Mutation {
+  studentCreate(data: CreateStudentInput!): Student!
+  studentUpdate(studentId: ObjectId!, data: UpdateStudentInput!): Student!
+  studentDelete(studentId: ObjectId!): Student!
+  userCreate(data: CreateUserInput!): User!
+  userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
+  userDelete(userId: ObjectId!): User!
+}
+
+input CreateStudentInput {
+  _id: ID!
+}
+
+input UpdateStudentInput {
+  _id: ID
+}
+
+input CreateUserInput {
+  _id: ID!
+}
+
+input UpdateUserInput {
+  _id: ID
+}
