@@ -1,0 +1,44 @@
+version: '3.9'
+
+networks:
+  server-network: {}
+services:
+  dev:
+    container_name: student-attendance-app
+    image: student-attendance-app
+    build:
+      context: .
+      target: deploy
+    command: npm run start:prod
+    tty: true
+    stdin_open: true
+    ports:
+      - 3270:3270
+    volumes:
+      - ./:/home/app:z
+    networks:
+      - server-network
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://guest:guest@mongodb:27017
+  mongodb:
+    image: mongo:latest
+    container_name: server-mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=guest
+      - MONGO_INITDB_ROOT_PASSWORD=guest
+    networks:
+      - server-network
+    ports:
+      - 3271:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    volumes:
+      - /home/data/saa-db:/data/configdb:z
+      - /home/data/saa-db:/data/db:z
+

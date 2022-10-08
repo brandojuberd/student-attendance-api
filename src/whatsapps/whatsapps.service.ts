@@ -69,7 +69,7 @@ export class WhatsappsService {
 
   private convertPhoneNumberFormat(
     countryCode: string,
-    phoneNumber: string
+    phoneNumber: string,
   ): string {
     if (!countryCode) {
       countryCode = '62';
@@ -102,21 +102,21 @@ export class WhatsappsService {
 
     args.query = '';
     args.limit = 5;
-    args.status = "APPROVED"
+    args.status = 'APPROVED';
     const result: {
       data: {
         status: string;
         data: {
-          id: string,
-          organization_id: string,
-          name: string,
-          language: string,
-          header: object,
-          body: string,
-          footer: object,
-          buttons: object[],
-          status: string,
-          category: string
+          id: string;
+          organization_id: string;
+          name: string;
+          language: string;
+          header: object;
+          body: string;
+          footer: object;
+          buttons: object[];
+          status: string;
+          category: string;
         }[];
       };
     } = await axios({
@@ -148,7 +148,7 @@ export class WhatsappsService {
     return result.data.data;
   }
 
-  async sendAnyMessage(){
+  async sendAnyMessage() {
     // const templates = await this.getTemplate({
     //   limit: 5,
     //   query: "",
@@ -161,28 +161,31 @@ export class WhatsappsService {
     //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
     //   whatsAppTemplateMessageID: templates[0].id
     // })
-    const result = await this.sendDirectMessage({
-      messageTopicName: "send-late-message",
-      parameters: {body: []},
-      countryCode: "62",
-      toName: "ipeh",
-      telephoneNumber: "81290564870",
-      channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
-      whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
-    })
-    return "sucess"
+    console.log({
+      telephoneNumber: checkEnvVariable('WHATSAPP_PHONE_NUMBER'),
+    });
+    // const result = await this.sendDirectMessage({
+    //   messageTopicName: "send-late-message",
+    //   parameters: {body: []},
+    //   countryCode: "62",
+    //   toName: "ipeh",
+    //   telephoneNumber: checkEnvVariable("WHATSAPP_PHONE_NUMBER"),
+    //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
+    //   whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
+    // })
+    return 'sucess';
   }
 
   async sendDirectMessage(
     directMessageDataInput: SendDirectMessageArgs,
-    stackTrace = new Error().stack
+    stackTrace = new Error().stack,
   ): Promise<
     | string
     | SendDirectMessageArgs
     | { message: string; status: number; data: any; stack: string }
   > {
     const {
-      channelIntegrationID = checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
+      channelIntegrationID = checkEnvVariable('QONTAK_CHANNEL_INTEGRATION_ID'),
       telephoneNumber,
       whatsAppTemplateMessageID,
       messageTopicName,
@@ -194,8 +197,8 @@ export class WhatsappsService {
     if (checkEnvVariable('NODE_ENV') === 'test') {
       //change telephone number for check testing
       directMessageDataInput.telephoneNumber = this.convertPhoneNumberFormat(
-        countryCode || "+62",
-        telephoneNumber
+        countryCode || '+62',
+        telephoneNumber,
       );
       return directMessageDataInput;
     }
@@ -209,8 +212,7 @@ export class WhatsappsService {
           });
         }
 
-        const  { access_token } = await this.qontakAccessToken() || {};
-
+        const { access_token } = (await this.qontakAccessToken()) || {};
 
         const result = await qontakAxios({
           method: 'POST',
@@ -221,8 +223,8 @@ export class WhatsappsService {
           },
           data: {
             to_number: this.convertPhoneNumberFormat(
-              countryCode || "+62",
-              telephoneNumber
+              countryCode || '+62',
+              telephoneNumber,
             ),
             to_name: `${toName}_${messageTopicName}`,
             message_template_id: whatsAppTemplateMessageID,
