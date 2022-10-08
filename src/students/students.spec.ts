@@ -183,9 +183,6 @@ describe('Solutions', () => {
     expect(res.body.errors).toBeUndefined();
     studentAttendance =
       res.body.data.studentAttendanceCheckout.studentAttendance;
-    console.log({
-      body: res.body.data
-    })
     expect(studentAttendance.student._id).toEqual(firstStudent._id);
 
     // CREATE student attendance late time

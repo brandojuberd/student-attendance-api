@@ -132,7 +132,6 @@ export class WhatsappsService {
     if (result.data.status !== 'success') {
       throw new InternalServerErrorException('Qontak Internal Server Error');
     }
-    // console.log(result.data.data);
     // result.data.data.forEach(async (template) => {
     //   template
     //   await this.whatsappTemplateMessagesService.create({
@@ -143,7 +142,6 @@ export class WhatsappsService {
     // });
 
     // const dataDb = await this.whatsappTemplateMessagesService.find({}).lean();
-    // console.log(dataDb);
 
     return result.data.data;
   }
@@ -161,18 +159,15 @@ export class WhatsappsService {
     //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
     //   whatsAppTemplateMessageID: templates[0].id
     // })
-    console.log({
-      telephoneNumber: checkEnvVariable('WHATSAPP_PHONE_NUMBER'),
-    });
-    // const result = await this.sendDirectMessage({
-    //   messageTopicName: "send-late-message",
-    //   parameters: {body: []},
-    //   countryCode: "62",
-    //   toName: "ipeh",
-    //   telephoneNumber: checkEnvVariable("WHATSAPP_PHONE_NUMBER"),
-    //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
-    //   whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
-    // })
+    const result = await this.sendDirectMessage({
+      messageTopicName: "send-late-message",
+      parameters: {body: []},
+      countryCode: "62",
+      toName: "ipeh",
+      telephoneNumber: checkEnvVariable("WHATSAPP_PHONE_NUMBER"),
+      channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
+      whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
+    })
     return 'sucess';
   }
 
