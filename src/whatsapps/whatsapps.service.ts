@@ -166,7 +166,7 @@ export class WhatsappsService {
       parameters: {body: []},
       countryCode: "62",
       toName: "ipeh",
-      telephoneNumber: "81382118825",
+      telephoneNumber: "81290564870",
       channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
       whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
     })
