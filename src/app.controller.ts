@@ -12,15 +12,15 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('whatapps/template')
-  getTemplate() {
-    return this.whatsappsService.getTemplate({
-      query: ""
-    })
-  }
+  // @Get('whatapps/template')
+  // getTemplate() {
+  //   return this.whatsappsService.getTemplate({
+  //     query: ""
+  //   })
+  // }
 
-  @Post('whatapps/send')
-  sendMessage() {
-    return this.whatsappsService.sendAnyMessage()
-  }
+  // @Post('whatapps/send')
+  // sendMessage() {
+  //   return this.whatsappsService.sendAnyMessage()
+  // }
 }

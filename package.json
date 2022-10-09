@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "student-attendance-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -8,11 +8,12 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "build:image": "docker build -t student-attendance-app .",
+    "build:image:dev": "docker build -t student-attendance-api --target=dev .",
+    "build:image:prod": "docker build -t student-attendance-api --target=prod .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:docker": "docker compose -f docker-compose.yaml up -d && docker exec -it student-attendance-app bash",
-    "start:docker:depl": "docker compose -f depl.docker-compose.yaml up -d",
+    "start:docker": "docker compose -f docker-compose.yaml up -d && docker exec -it student-attendance-api bash",
+    "start:docker:prod": "docker compose -f prod.docker-compose.yaml up -d",
     "start:dev": "NODE_ENV='development' env-cmd -f .env nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "NODE_ENV='production' env-cmd -f .env node dist/main",

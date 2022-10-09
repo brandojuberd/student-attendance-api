@@ -4,11 +4,11 @@ networks:
   server-network: {}
 services:
   dev:
-    container_name: student-attendance-app
-    image: student-attendance-app
+    container_name: student-attendance-api
+    image: student-attendance-api
     build:
       context: .
-      target: deploy
+      target: prod
     command: npm run start:prod
     tty: true
     stdin_open: true

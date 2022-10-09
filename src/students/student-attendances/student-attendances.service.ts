@@ -10,6 +10,7 @@ import { StudentAttendanceUpdateObject } from './dto/student-attendance-create.o
 import { GetStudentAttendancesArgs } from './dto/get-student-attendances-args';
 import { WhatsappsService } from 'src/whatsapps/whatsapps.service';
 import { TypeObjectId } from 'src/common/helpers/mongoose.helper';
+import { Student } from '../entities/student.entity';
 // ${1 : PascalCase}
 // ${2 : camelCase}
 @Injectable()
@@ -57,13 +58,18 @@ export class StudentAttendancesService extends Service<StudentAttendance> {
     //   throw new BadRequestException('Siswa/i telah melakukan check in');
     // }
     const studentAttendance = await this.create(data);
+    const populatedStudentAttendance = await studentAttendance.populate<{
+      student: Student;
+    }>({ path: 'student', options: { lean: true } });
+    const student = populatedStudentAttendance.student;
+    studentAttendance.depopulate('student');
     // if (checkIn > lateTime) {
     //   return {
     //     studentAttendance,
     //     message: 'Siswa/i terlambat',
     //   };
     // }
-    await this.whatsappsService.sendAnyMessage();
+    await this.whatsappsService.sendAnyMessage(student, studentAttendance);
     return {
       studentAttendance,
       message: 'Berhasil melakukan check in',

@@ -14,6 +14,9 @@ import { checkEnvVariable } from 'src/common/helpers/check-env-variable.helper';
 import { WhatsappTemplateMessagesService } from './whatsapp-templates.service';
 import { WhatsappTemplateMessage } from './entities/whatsapp-template-message.entity';
 import { SendDirectMessageArgs } from './dto/whatsapp-send-direct-message.args';
+import { Student } from 'src/students/entities/student.entity';
+import { StudentAttendance } from 'src/students/student-attendances/entities/student-attendance.entity';
+import { DateTime } from 'luxon';
 // import { qontakAxios } from '../common/qontak.api';
 // import { SolutionProcedureVariant } from './classes/solution-procedure-variants.schema';
 
@@ -146,10 +149,10 @@ export class WhatsappsService {
     return result.data.data;
   }
 
-  async sendAnyMessage() {
+  async sendAnyMessage(student: Student, studentAttendance: StudentAttendance) {
     // const templates = await this.getTemplate({
     //   limit: 5,
-    //   query: "",
+    //   query: "send-in-message",
     //   status: "APPROVED"
     // })
     // const result = await this.sendDirectMessage({
@@ -159,15 +162,42 @@ export class WhatsappsService {
     //   channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
     //   whatsAppTemplateMessageID: templates[0].id
     // })
-    const result = await this.sendDirectMessage({
-      messageTopicName: "send-late-message",
-      parameters: {body: []},
-      countryCode: "62",
-      toName: "ipeh",
-      telephoneNumber: checkEnvVariable("WHATSAPP_PHONE_NUMBER"),
-      channelIntegrationID: checkEnvVariable("QONTAK_CHANNEL_INTEGRATION_ID"),
-      whatsAppTemplateMessageID: "80fc23bb-4b6a-4750-8a15-9ccec88a304f"
-    })
+    await this.sendDirectMessage({
+      messageTopicName: 'send_in_message',
+      parameters: {
+        body: [
+          {
+            key: '1',
+            value: 'student_fullname',
+            value_text: student.fullName,
+          },
+          {
+            key: '2',
+            value: 'student_school',
+            value_text: student.school,
+          },
+          {
+            key: '3',
+            value: 'student_class',
+            value_text: student.class,
+          },
+          {
+            key: '4',
+            value: 'check_in',
+            value_text: DateTime.fromJSDate(studentAttendance.checkIn)
+              .setLocale('id-ID')
+              .toFormat('HH:mm dd LLL yyyy'),
+          },
+        ],
+      },
+      countryCode: '62',
+      toName: student.fullName,
+      telephoneNumber: checkEnvVariable('WHATSAPP_PHONE_NUMBER'),
+      channelIntegrationID: checkEnvVariable('QONTAK_CHANNEL_INTEGRATION_ID'),
+      whatsAppTemplateMessageID: checkEnvVariable(
+        'WHATSAPP_TEMPLATE_MESSAGE_ID',
+      ),
+    });
     return 'sucess';
   }
 
@@ -208,7 +238,6 @@ export class WhatsappsService {
         }
 
         const { access_token } = (await this.qontakAccessToken()) || {};
-
         const result = await qontakAxios({
           method: 'POST',
           url: '/api/open/v1/broadcasts/whatsapp/direct',
