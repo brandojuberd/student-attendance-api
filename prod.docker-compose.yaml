@@ -3,7 +3,7 @@ version: '3.9'
 networks:
   server-network: {}
 services:
-  dev:
+  prod:
     container_name: student-attendance-api
     image: student-attendance-api
     build:
@@ -14,8 +14,8 @@ services:
     stdin_open: true
     ports:
       - 3270:3270
-    volumes:
-      - ./:/home/app:z
+    # volumes:
+    #   - ./:/home/app:z
     networks:
       - server-network
     depends_on:

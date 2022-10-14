@@ -9,16 +9,16 @@ export class User {
   _id!: Types.ObjectId;
 
   @Field(() => String)
-  @Prop({type: String})
-  username!: string
+  @Prop({ type: String })
+  username!: string;
 
   @Field(() => String)
-  @Prop({type: String})
-  role!: string
+  @Prop({ type: String })
+  role!: string;
 
   @Field(() => String)
-  @Prop({type: String})
-  password!: string
+  @Prop({ type: String })
+  password!: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

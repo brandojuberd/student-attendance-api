@@ -4,8 +4,8 @@ networks:
   server-network: {}
 services:
   dev:
-    container_name: student-attendance-api
-    image: student-attendance-api
+    container_name: student-attendance-api-dev
+    image: student-attendance-api-dev
     build:
       context: .
       target: dev
@@ -20,6 +20,7 @@ services:
       - server-network
     depends_on:
       - mongodb
+      # - jmeter
     environment:
       - MONGO_URI=mongodb://guest:guest@mongodb:27017
   mongodb:
@@ -41,4 +42,11 @@ services:
     volumes:
       - /home/data/saa-db:/data/configdb:z
       - /home/data/saa-db:/data/db:z
-
+  # jmeter:
+  #   image: justb4/jmeter:latest
+  #   container_name: student-attendance-jmeter
+  #   command: bash
+  #   tty: true
+  #   stdin_open: true
+  #   networks:
+  #     - server-network
