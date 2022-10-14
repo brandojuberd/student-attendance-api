@@ -4,8 +4,8 @@ networks:
   server-network: {}
 services:
   dev:
-    container_name: student-attendance-api-dev
-    image: student-attendance-api-dev
+    container_name: student-attendance-api
+    image: student-attendance-api
     build:
       context: .
       target: dev

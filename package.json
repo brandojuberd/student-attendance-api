@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "build:image:dev": "docker build -t student-attendance-api --target=dev .",
-    "build:image:prod": "docker build -t student-attendance-api-prod --target=prod .",
+    "build:image:prod": "docker build -t student-attendance-api --no-cache --target=prod .",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:docker": "docker compose -f docker-compose.yaml up -d && docker exec -it student-attendance-api bash",
