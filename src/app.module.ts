@@ -11,12 +11,14 @@ import { StudentsModule } from './students/students.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { WhatsappsModule } from './whatsapps/whatsapp.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    AuthModule,
     StudentsModule,
     UsersModule,
     WhatsappsModule,

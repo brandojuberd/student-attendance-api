@@ -62,8 +62,19 @@ type StudentsList {
 type User {
   _id: ID!
   username: String!
-  role: String!
-  password: String!
+  email: String!
+  role: UserRoleEnum!
+}
+
+enum UserRoleEnum {
+  """SuperAdmin"""
+  SuperAdmin
+
+  """Admin"""
+  Admin
+
+  """Teacher"""
+  Teacher
 }
 
 type UsersList {
@@ -71,18 +82,35 @@ type UsersList {
   count: Float!
 }
 
-type Query {
-  student(studentId: ObjectId!): Student!
-  studentsList(query: GetStudentsArgs): StudentsList!
-  studentAttendance(studentAttendanceId: ObjectId!): StudentAttendance!
-  studentAttendancesList(query: GetStudentAttendancesArgs, populate: [PopulateInput!] = [], lean: Boolean = false): StudentAttendancesList!
-  users(query: GetUsersArgs!): [User!]!
-  user(userId: ObjectId!): User!
-  usersList(query: GetUsersArgs!): UsersList!
+type ValidatedUser {
+  accessToken: String!
+  _id: ObjectId!
+  username: String!
+  email: String!
+  role: String!
 }
 
 """Mongo object id scalar type"""
 scalar ObjectId
+
+type Query {
+  """Get profile and refresh token"""
+  profile: ValidatedUser!
+  users(query: GetUsersArgs!): [User!]!
+  user(userId: ObjectId!): User!
+  usersList(query: GetUsersArgs!): UsersList!
+  student(studentId: ObjectId!): Student!
+  studentsList(query: GetStudentsArgs): StudentsList!
+  studentAttendance(studentAttendanceId: ObjectId!): StudentAttendance!
+  studentAttendancesList(query: GetStudentAttendancesArgs, populate: [PopulateInput!] = [], lean: Boolean = false): StudentAttendancesList!
+}
+
+input GetUsersArgs {
+  email: String
+  username: String
+  role: [UserRoleEnum!]
+  password: String
+}
 
 input GetStudentsArgs {
   nik: String
@@ -115,11 +143,14 @@ input QueryOptionInput {
   lean: Boolean
 }
 
-input GetUsersArgs {
-  _id: String
-}
-
 type Mutation {
+  login(email: String!, password: String!): ValidatedUser!
+
+  """refresh token and save device data"""
+  profileRefresh: ValidatedUser!
+  userCreate(data: CreateUserInput!): User!
+  userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
+  userDelete(userId: ObjectId!): User!
   studentCreate(data: CreateStudentInput!): Student!
   studentCreateMany(data: [CreateStudentInput!]!): Student!
   studentUpdate(studentId: ObjectId!, data: UpdateStudentInput!): Student!
@@ -128,9 +159,20 @@ type Mutation {
   studentAttendanceUpdate(studentAttendanceId: ObjectId!, data: UpdateStudentAttendanceInput!): StudentAttendance!
   studentAttendanceCheckout(studentId: ObjectId!): StudentAttendanceUpdateObject!
   studentAttendanceDelete(studentAttendanceId: ObjectId!): StudentAttendance!
-  userCreate(data: CreateUserInput!): User!
-  userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
-  userDelete(userId: ObjectId!): User!
+}
+
+input CreateUserInput {
+  email: String!
+  username: String!
+  role: UserRoleEnum!
+  password: String!
+}
+
+input UpdateUserInput {
+  email: String
+  username: String
+  role: UserRoleEnum
+  password: String
 }
 
 input CreateStudentInput {
@@ -162,12 +204,4 @@ input CreateStudentAttendanceInput {
 
 input UpdateStudentAttendanceInput {
   checkIn: DateTime!
-}
-
-input CreateUserInput {
-  _id: ID!
-}
-
-input UpdateUserInput {
-  _id: ID
 }

@@ -81,7 +81,7 @@ export class StudentAttendancesService extends Service<StudentAttendance> {
     studentId: TypeObjectId,
   ): Promise<StudentAttendanceUpdateObject> {
     let timeJakarta = DateTime.now().setZone('Asia/Jakarta');
-    const currentStudentAttendance = await this.findOneV2({
+    const currentStudentAttendance = await this.findOne({
       student: studentId,
       checkIn: {
         $gte: timeJakarta.set({ hour: 0, minute: 0 }),

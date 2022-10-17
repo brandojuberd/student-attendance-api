@@ -92,7 +92,7 @@ export abstract class Service<T> {
    *
    * @throws InternalServerErrorException
    */
-  findOneV2(
+  findOne(
     conditions: FilterQuery<T> | Partial<Record<keyof T, unknown>>,
     projection: ProjectionFields<T> = {},
     options: QueryOptions | null | Record<string, unknown> = {},

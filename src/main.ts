@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { fstat, readFileSync } from 'fs';
 import { AppModule } from './app.module';
 import {
   checkEnvVariable,

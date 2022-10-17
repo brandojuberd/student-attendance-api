@@ -1,4 +1,5 @@
 import { ArgsType, InputType, Field, ObjectType } from '@nestjs/graphql';
+import { UserRoleEnum } from '../entities/user-role.enum';
 
 // ${1 : PascalCase}
 // This used for query
@@ -6,6 +7,15 @@ import { ArgsType, InputType, Field, ObjectType } from '@nestjs/graphql';
 @ArgsType()
 @InputType()
 export class GetUsersArgs {
-  @Field({ nullable: true })
-  _id!: string;
+  @Field(() => String, {nullable: true})
+  email?: string;
+
+  @Field(() => String, {nullable: true})
+  username?: string;
+
+  @Field(() => [UserRoleEnum], {nullable: true})
+  role?: UserRoleEnum[];
+
+  @Field(() => String, {nullable: true})
+  password?: string;
 }
