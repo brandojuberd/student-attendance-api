@@ -1,7 +1,7 @@
 FROM node:16.10 AS base
 WORKDIR /home/student-attendance-api
-RUN npm install -g @nestjs/cli
 RUN npm install -g pnpm
+RUN pnpm install -g @nestjs/cli
 
 FROM base AS prod
 WORKDIR /home/student-attendance-api
