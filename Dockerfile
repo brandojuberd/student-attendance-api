@@ -1,15 +1,16 @@
 FROM node:16.10 AS base
-WORKDIR /home/app
+WORKDIR /home/student-attendance-api
 RUN npm install -g @nestjs/cli
+RUN npm install -g pnpm
 
 FROM base AS prod
-WORKDIR /home/app
+WORKDIR /home/student-attendance-api
 COPY . .
-RUN npm ci --production
-RUN npm run build
+RUN pnpm install
+RUN pnpm run build
 CMD [ "npm", "run", "start:prod" ]
 
 FROM base as dev
-COPY --from=base /home/app /home/app/
+COPY --from=base /home/student-attendance-api /home/student-attendance-api
 CMD ["bash"]
 
