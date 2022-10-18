@@ -1,4 +1,5 @@
 import { ArgsType, InputType, Field, ObjectType } from '@nestjs/graphql';
+import { PaginationArgs } from 'src/common/dto/pagination.args.';
 import { UserRoleEnum } from '../entities/user-role.enum';
 
 // ${1 : PascalCase}
@@ -6,7 +7,7 @@ import { UserRoleEnum } from '../entities/user-role.enum';
 // DO NOT FORGET TO DELETE 'extends PaginationArgs' if it is not used
 @ArgsType()
 @InputType()
-export class GetUsersArgs {
+export class GetUsersArgs extends PaginationArgs {
   @Field(() => String, {nullable: true})
   email?: string;
 

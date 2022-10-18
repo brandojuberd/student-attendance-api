@@ -42,7 +42,8 @@ export class UsersResolver {
 
   @Query(() => UsersList, { name: 'usersList' })
   getUsersList(
-    @Args('query', { type: () => GetUsersArgs }) query: GetUsersArgs,
+    @Args('query', { type: () => GetUsersArgs, nullable: true })
+    query: GetUsersArgs,
   ) {
     return this.usersService.getUsersList(query);
   }

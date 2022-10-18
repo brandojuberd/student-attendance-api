@@ -1,11 +1,12 @@
 import { ArgsType, InputType, Field, ObjectType } from '@nestjs/graphql';
+import { PaginationArgs } from 'src/common/dto/pagination.args.';
 
 // ${1 : PascalCase}
 // This used for query
 // DO NOT FORGET TO DELETE 'extends PaginationArgs' if it is not used
 @ArgsType()
 @InputType()
-export class GetStudentsArgs {
+export class GetStudentsArgs extends PaginationArgs{
   @Field(() => String, { nullable: true })
   nik?: string;
 

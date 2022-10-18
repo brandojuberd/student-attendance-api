@@ -2,6 +2,29 @@ import { ArgsType, Field, InputType, Int } from '@nestjs/graphql';
 
 @ArgsType()
 @InputType()
+export class SearchOptionsInput {
+  // @Field(() => String, { nullable: true })
+  // fieldContains: string;
+  // @Field(() => [String], { nullable: true })
+  // searchInField: string[];
+  @Field()
+  searchText!: string;
+
+  @Field(() => [String])
+  searchInFields!: string[]
+
+  // @Field({ nullable: true, description: 'default: false' })
+  // caseSensitive: boolean;
+
+  // @Field({ nullable: true, description: `
+  //   Handles diacritic case, for example: é, ê, and e.
+  //   mongo default value: false
+  // `})
+  // diacriticSensitive: boolean;
+}
+
+@ArgsType()
+@InputType()
 export class PaginationArgs {
   @Field(() => Int, {
     nullable: true,
@@ -39,25 +62,4 @@ export class PaginationArgs {
   searchOptions?: SearchOptionsInput;
 }
 
-@ArgsType()
-@InputType()
-export class SearchOptionsInput {
-  // @Field(() => String, { nullable: true })
-  // fieldContains: string;
-  // @Field(() => [String], { nullable: true })
-  // searchInField: string[];
-  @Field()
-  searchText!: string;
 
-  @Field(() => [String])
-  searchInFields!: string[]
-
-  // @Field({ nullable: true, description: 'default: false' })
-  // caseSensitive: boolean;
-
-  // @Field({ nullable: true, description: `
-  //   Handles diacritic case, for example: é, ê, and e.
-  //   mongo default value: false
-  // `})
-  // diacriticSensitive: boolean;
-}

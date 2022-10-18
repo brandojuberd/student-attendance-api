@@ -93,44 +93,99 @@ type ValidatedUser {
 """Mongo object id scalar type"""
 scalar ObjectId
 
+type School {
+  _id: ObjectId!
+  name: String!
+  logoPhoto: String!
+  address: String!
+
+  """Area code ex: Jakarta is 21"""
+  areaCode: String!
+
+  """phone without area code"""
+  phone: String!
+}
+
+type SchoolsList {
+  schools: [School!]!
+  count: Float!
+}
+
+type Classroom {
+  _id: ObjectId!
+  school: School!
+  grade: ClassroomGradeEnum!
+  name: String!
+}
+
+enum ClassroomGradeEnum {
+  """Nine"""
+  Nine
+
+  """Eight"""
+  Eight
+
+  """Seven"""
+  Seven
+}
+
+type ClassroomsList {
+  classrooms: [Classroom!]!
+  count: Float!
+}
+
 type Query {
   """Get profile and refresh token"""
   profile: ValidatedUser!
   users(query: GetUsersArgs!): [User!]!
   user(userId: ObjectId!): User!
-  usersList(query: GetUsersArgs!): UsersList!
+  usersList(query: GetUsersArgs): UsersList!
+  classrooms(query: GetClassroomsArgs!): [Classroom!]!
+  classroom(classroomId: ObjectId!): Classroom!
+  classroomsList(query: GetClassroomsArgs, populate: [PopulateInput!] = [], lean: Boolean = false): ClassroomsList!
   student(studentId: ObjectId!): Student!
   studentsList(query: GetStudentsArgs): StudentsList!
   studentAttendance(studentAttendanceId: ObjectId!): StudentAttendance!
   studentAttendancesList(query: GetStudentAttendancesArgs, populate: [PopulateInput!] = [], lean: Boolean = false): StudentAttendancesList!
+  schools(query: GetSchoolsArgs!): [School!]!
+  school(schoolId: ObjectId!): School!
+  schoolsList(query: GetSchoolsArgs, populate: [PopulateInput!] = [], lean: Boolean = false): SchoolsList!
 }
 
 input GetUsersArgs {
+  "\n    implements pagination, <page> default value is 1\n    works with field <limit> to skip (<page>*<limit>) docs.\n  "
+  page: Int
+
+  "\n    implements pagination, <limit> default value is 10\n    works with field <page> to skip (<page>*<limit>) docs.\n  "
+  limit: Int
+
+  "\n    Can sort multiple <key>\n    format: <key>:<sort>|<key2>:<sort>|<nextKey>:<sort>\n    <sort> is either : 1 (ascending) or -1 (descending)\n    | is used as separator between key\n    example: createdAt:-1|title:1\n  "
+  sort: String
+  searchOptions: SearchOptionsInput
   email: String
   username: String
   role: [UserRoleEnum!]
   password: String
 }
 
-input GetStudentsArgs {
-  nik: String
-  fullName: String
-  profilePhoto: String
-  school: String
-  class: String
-  birthDate: DateTime
-  countryCode: String
-  phone: String
+input SearchOptionsInput {
+  searchText: String!
+  searchInFields: [String!]!
 }
 
-input GetStudentAttendancesArgs {
-  student: ObjectId
-  dateRange: DateRangeArgs
-}
+input GetClassroomsArgs {
+  "\n    implements pagination, <page> default value is 1\n    works with field <limit> to skip (<page>*<limit>) docs.\n  "
+  page: Int
 
-input DateRangeArgs {
-  start: DateTime
-  end: DateTime
+  "\n    implements pagination, <limit> default value is 10\n    works with field <page> to skip (<page>*<limit>) docs.\n  "
+  limit: Int
+
+  "\n    Can sort multiple <key>\n    format: <key>:<sort>|<key2>:<sort>|<nextKey>:<sort>\n    <sort> is either : 1 (ascending) or -1 (descending)\n    | is used as separator between key\n    example: createdAt:-1|title:1\n  "
+  sort: String
+  searchOptions: SearchOptionsInput
+  school: ObjectId
+  grade: ClassroomGradeEnum
+  name: String
 }
 
 input PopulateInput {
@@ -143,6 +198,66 @@ input QueryOptionInput {
   lean: Boolean
 }
 
+input GetStudentsArgs {
+  "\n    implements pagination, <page> default value is 1\n    works with field <limit> to skip (<page>*<limit>) docs.\n  "
+  page: Int
+
+  "\n    implements pagination, <limit> default value is 10\n    works with field <page> to skip (<page>*<limit>) docs.\n  "
+  limit: Int
+
+  "\n    Can sort multiple <key>\n    format: <key>:<sort>|<key2>:<sort>|<nextKey>:<sort>\n    <sort> is either : 1 (ascending) or -1 (descending)\n    | is used as separator between key\n    example: createdAt:-1|title:1\n  "
+  sort: String
+  searchOptions: SearchOptionsInput
+  nik: String
+  fullName: String
+  profilePhoto: String
+  school: String
+  class: String
+  birthDate: DateTime
+  countryCode: String
+  phone: String
+}
+
+input GetStudentAttendancesArgs {
+  "\n    implements pagination, <page> default value is 1\n    works with field <limit> to skip (<page>*<limit>) docs.\n  "
+  page: Int
+
+  "\n    implements pagination, <limit> default value is 10\n    works with field <page> to skip (<page>*<limit>) docs.\n  "
+  limit: Int
+
+  "\n    Can sort multiple <key>\n    format: <key>:<sort>|<key2>:<sort>|<nextKey>:<sort>\n    <sort> is either : 1 (ascending) or -1 (descending)\n    | is used as separator between key\n    example: createdAt:-1|title:1\n  "
+  sort: String
+  searchOptions: SearchOptionsInput
+  student: ObjectId
+  dateRange: DateRangeArgs
+}
+
+input DateRangeArgs {
+  start: DateTime
+  end: DateTime
+}
+
+input GetSchoolsArgs {
+  "\n    implements pagination, <page> default value is 1\n    works with field <limit> to skip (<page>*<limit>) docs.\n  "
+  page: Int
+
+  "\n    implements pagination, <limit> default value is 10\n    works with field <page> to skip (<page>*<limit>) docs.\n  "
+  limit: Int
+
+  "\n    Can sort multiple <key>\n    format: <key>:<sort>|<key2>:<sort>|<nextKey>:<sort>\n    <sort> is either : 1 (ascending) or -1 (descending)\n    | is used as separator between key\n    example: createdAt:-1|title:1\n  "
+  sort: String
+  searchOptions: SearchOptionsInput
+  name: String
+  logoPhoto: String
+  address: String
+
+  """Area code ex: Jakarta is 21"""
+  areaCode: String
+
+  """phone without area code"""
+  phone: String
+}
+
 type Mutation {
   login(email: String!, password: String!): ValidatedUser!
 
@@ -151,6 +266,9 @@ type Mutation {
   userCreate(data: CreateUserInput!): User!
   userUpdate(userId: ObjectId!, data: UpdateUserInput!): User!
   userDelete(userId: ObjectId!): User!
+  classroomCreate(data: CreateClassroomInput!): Classroom!
+  classroomUpdate(classroomId: ObjectId!, data: UpdateClassroomInput!): Classroom!
+  classroomDelete(classroomId: ObjectId!): Classroom!
   studentCreate(data: CreateStudentInput!): Student!
   studentCreateMany(data: [CreateStudentInput!]!): Student!
   studentUpdate(studentId: ObjectId!, data: UpdateStudentInput!): Student!
@@ -159,6 +277,9 @@ type Mutation {
   studentAttendanceUpdate(studentAttendanceId: ObjectId!, data: UpdateStudentAttendanceInput!): StudentAttendance!
   studentAttendanceCheckout(studentId: ObjectId!): StudentAttendanceUpdateObject!
   studentAttendanceDelete(studentAttendanceId: ObjectId!): StudentAttendance!
+  schoolCreate(data: CreateSchoolInput!): School!
+  schoolUpdate(schoolId: ObjectId!, data: UpdateSchoolInput!): School!
+  schoolDelete(schoolId: ObjectId!): School!
 }
 
 input CreateUserInput {
@@ -173,6 +294,18 @@ input UpdateUserInput {
   username: String
   role: UserRoleEnum
   password: String
+}
+
+input CreateClassroomInput {
+  school: ObjectId!
+  grade: ClassroomGradeEnum!
+  name: String!
+}
+
+input UpdateClassroomInput {
+  school: ObjectId
+  grade: ClassroomGradeEnum
+  name: String
 }
 
 input CreateStudentInput {
@@ -204,4 +337,28 @@ input CreateStudentAttendanceInput {
 
 input UpdateStudentAttendanceInput {
   checkIn: DateTime!
+}
+
+input CreateSchoolInput {
+  name: String!
+  logoPhoto: String!
+  address: String!
+
+  """Area code ex: Jakarta is 21"""
+  areaCode: String!
+
+  """phone without area code"""
+  phone: String!
+}
+
+input UpdateSchoolInput {
+  name: String
+  logoPhoto: String
+  address: String
+
+  """Area code ex: Jakarta is 21"""
+  areaCode: String
+
+  """phone without area code"""
+  phone: String
 }

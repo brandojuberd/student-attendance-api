@@ -12,6 +12,8 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { WhatsappsModule } from './whatsapps/whatsapp.module';
 import { AuthModule } from './auth/auth.module';
+import { SchoolsModule } from './schools/schools.module';
+import { ClassroomsModule } from './classrooms/classrooms.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -19,11 +21,12 @@ import { AuthModule } from './auth/auth.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     AuthModule,
+    ClassroomsModule,
     StudentsModule,
+    SchoolsModule,
     UsersModule,
     WhatsappsModule,
     MongooseModule.forRoot(checkEnvVariable('MONGO_URI')),
-    // ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService, ObjectIdScalar],
